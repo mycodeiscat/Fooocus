@@ -1,4 +1,5 @@
 import modules.core as core
+from modules.core import load_and_apply_controlnet_lite
 import os
 import torch
 import modules.patch
@@ -347,10 +348,18 @@ def process_diffusion(positive_cond, negative_cond, steps, switch, width, height
 
     decoded_latent = None
 
-    from core import load_and_apply_controlnet_lite
+    
     print(final_unet)
-    final_unet = load_and_apply_controlnet_lite(final_unet, '', None, 1, 0, 100, steps)
+    from PIL import Image
+    import numpy as np
+    cond_image = Image.open('nafo_canny_1024.png')
+    cond_image = torch.tensor(np.array(cond_image))
+    cond_image = cond_image.unsqueeze(0).permute(0, 3, 1, 2)
 
+    model_name='kohya_controllite.safetensors'
+
+    final_unet = load_and_apply_controlnet_lite(model=final_unet, ckpt_filename=model_name, image=cond_image, strength=1, start_percent=0, end_percent=100, steps=steps)
+    
     if refiner_swap_method == 'joint':
         sampled_latent = core.ksampler(
             model=final_unet,

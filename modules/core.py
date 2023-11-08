@@ -69,8 +69,7 @@ def apply_controlnet(positive, negative, control_net, image, strength, start_per
 @torch.no_grad()
 @torch.inference_mode()
 def load_and_apply_controlnet_lite(model, ckpt_filename, image, strength, start_percent, end_percent, steps):
-    return opControlNetLite.load_lllite(model=model, model_name=ckpt_filename, cond_image=image, strength=strength,
-        start_percent=start_percent, end_percent=end_percent)
+    return opControlNetLite.load_lllite(model=model, model_name=ckpt_filename, cond_image=image, strength=strength, steps=steps, start_percent=start_percent, end_percent=end_percent)
 
 @torch.no_grad()
 @torch.inference_mode()
