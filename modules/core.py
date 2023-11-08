@@ -13,6 +13,9 @@ import fcbh.model_detection
 import fcbh.model_patcher
 import fcbh.utils
 import fcbh.controlnet
+
+import fcbh.control_net_lllite
+
 import modules.sample_hijack
 import fcbh.samplers
 import fcbh.latent_formats
@@ -35,6 +38,7 @@ opVAEEncodeTiled = VAEEncodeTiled()
 opControlNetApplyAdvanced = ControlNetApplyAdvanced()
 opFreeU = FreeU_V2()
 
+opControlNetLite = fcbh.control_net_lllite.LLLiteLoader()
 
 class StableDiffusionModel:
     def __init__(self, unet, vae, clip, clip_vision):
@@ -62,6 +66,11 @@ def apply_controlnet(positive, negative, control_net, image, strength, start_per
     return opControlNetApplyAdvanced.apply_controlnet(positive=positive, negative=negative, control_net=control_net,
         image=image, strength=strength, start_percent=start_percent, end_percent=end_percent)
 
+@torch.no_grad()
+@torch.inference_mode()
+def load_and_apply_controlnet_lite(model, ckpt_filename, image, strength, start_percent, end_percent, steps):
+    return opControlNetLite.load_lllite(model=model, model_name=ckpt_filename, cond_image=image, strength=strength,
+        start_percent=start_percent, end_percent=end_percent)
 
 @torch.no_grad()
 @torch.inference_mode()

@@ -347,6 +347,10 @@ def process_diffusion(positive_cond, negative_cond, steps, switch, width, height
 
     decoded_latent = None
 
+    from core import load_and_apply_controlnet_lite
+    print(final_unet)
+    final_unet = load_and_apply_controlnet_lite(final_unet, '', None, 1, 0, 100, steps)
+
     if refiner_swap_method == 'joint':
         sampled_latent = core.ksampler(
             model=final_unet,
